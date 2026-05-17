@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="KiVoitQuoi">
+<meta name="theme-color" content="#FFF3D6">
+<title>KiVoitQuoi 🚗</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiS2lWb2l0UXVvaSIsInNob3J0X25hbWUiOiJLaVZvaXRRdW9pIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNGRkYzRDYiLCJ0aGVtZV9jb2xvciI6IiNGRkYzRDYiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCU3QiU3RCIsInNpemVzIjoiYW55IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="screen active" id="home">
+  <div class="home-hero">
+    <div class="sky-deco">
+      <div class="cloud c1"></div>
+      <div class="cloud c2"></div>
+      <div class="cloud c3"></div>
+      <div class="mountains">
+        <div class="mountain mt1"></div>
+        <div class="mountain mt2"></div>
+        <div class="mountain mt3"></div>
+        <div class="mountain mt4"></div>
+      </div>
+      <div class="road-stripe"></div>
+    </div>
+    <div class="hero-logo">
+      <span class="logo-emoji">🚗</span>
+      <div class="logo-text">Ki<em>Voit</em>Quoi</div>
+      <div class="logo-tag">Le bingo du road trip</div>
+    </div>
+  </div>
+
+  <div class="home-content">
+    <span class="section-label">Nouvelle partie</span>
+
+    <div class="mode-cards">
+      <div class="mode-card team" onclick="goSetup('team')">
+        <span class="mc-emoji">🤝</span>
+        <span class="mc-name">Équipe</span>
+        <span class="mc-desc">Une grille tous ensemble</span>
+      </div>
+      <div class="mode-card defi" onclick="goSetup('defi')">
+        <span class="mc-emoji">⚔️</span>
+        <span class="mc-name">Défi</span>
+        <span class="mc-desc">Chacun sa grille !</span>
+      </div>
+    </div>
+
+    <div class="print-card mt8" onclick="goPrint()">
+      <span class="pc-icon">🖨️</span>
+      <div class="pc-info">
+        <strong>Imprimer des grilles</strong>
+        <small>Version papier pour les enfants</small>
+      </div>
+      <span class="pc-arrow">›</span>
+    </div>
+
+    <div class="print-card mt8" onclick="goMyItems()" style="background:linear-gradient(135deg,#FFF8E0,#FFEDC0);border-color:var(--sun);">
+      <span class="pc-icon">✨</span>
+      <div class="pc-info">
+        <strong>Mes éléments</strong>
+        <small id="myItemsCount">Ajoute tes propres trucs à trouver</small>
+      </div>
+      <span class="pc-arrow">›</span>
+    </div>
+
+    <span class="section-label">Parties récentes</span>
+    <div id="homeHistory">
+      <div class="empty-msg">🗺️ Aucune partie encore — à vos places !</div>
+    </div>
+    <div class="hist-link" onclick="goHistory()">
+      📋 Tout l'historique
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SETUP ══════════ -->
+<div class="screen" id="setup">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="topbar-title" id="setupTitle">Nouvelle partie</span>
+  </div>
+
+  <div class="setup-body">
+
+    <span class="section-label">Nombre de joueurs</span>
+    <div class="pcount-row">
+      <button class="pcount-btn sel" data-n="1" onclick="setPlayers(1)">1</button>
+      <button class="pcount-btn" data-n="2" onclick="setPlayers(2)">2</button>
+      <button class="pcount-btn" data-n="3" onclick="setPlayers(3)">3</button>
+      <button class="pcount-btn" data-n="4" onclick="setPlayers(4)">4</button>
+    </div>
+
+    <span class="section-label">Prénoms</span>
+    <div class="pnames" id="pnameWrap"></div>
+
+    <span class="section-label">Difficulté</span>
+    <div class="diff-row">
+      <button class="diff-btn sel" data-d="easy"   onclick="setDiff('easy')">🟢 Facile</button>
+      <button class="diff-btn"     data-d="medium" onclick="setDiff('medium')">🟡 Moyen</button>
+      <button class="diff-btn"     data-d="hard"   onclick="setDiff('hard')">🔴 Difficile</button>
+    </div>
+
+    <span class="section-label">Éléments</span>
+    <div class="ge-wrap">
+      <div class="ge-tabs">
+        <button class="ge-tab active" onclick="geSwitch('random')">🎲 Aléatoire</button>
+        <button class="ge-tab" onclick="geSwitch('custom')">✏️ Personnalisé</button>
+      </div>
+      <div class="ge-panel active" id="ge-random">
+        <p class="ge-hint">Une grille différente sera générée au hasard pour chaque joueur parmi tous les éléments disponibles.</p>
+      </div>
+      <div class="ge-panel" id="ge-custom">
+        <p class="ge-hint">Sélectionne exactement 25 éléments :</p>
+        <div class="items-grid" id="itemsGrid"></div>
+        <div class="ge-count" id="geCount">0 / 25 sélectionnés</div>
+      </div>
+    </div>
+
+    <div class="driver-warn">
+      <span class="dw-icon">🚨</span>
+      <div class="dw-text"><span>Le conducteur ne joue PAS.</span> Ce jeu est uniquement pour les passagers. La route exige toute son attention !</div>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">🚦 C'est parti !</button>
+  </div>
+</div>
+
+<!-- ══════════ GAME ══════════ -->
+<div class="screen" id="game">
+  <div class="game-header">
+    <div class="game-topbar">
+      <div class="game-title-wrap">
+        <div class="game-mode-tag" id="gmodeTag"></div>
+        <div class="game-name" id="gname"></div>
+      </div>
+      <button class="ga-btn red" onclick="openQr()" style="max-width:44px;padding:8px;font-size:.9rem">📲</button>
+      <button class="back-btn" onclick="confirmQuit()">✕</button>
+    </div>
+    <div class="ptabs-wrap" id="ptabsWrap" style="display:none"></div>
+    <div class="score-row" id="scoreRow"></div>
+  </div>
+
+  <div id="gridPanels"></div>
+
+  <div class="game-actions">
+    <button class="ga-btn" onclick="resetCur()">🔄 Réinit.</button>
+    <button class="ga-btn" onclick="reshuffleCur()">🔀 Nouvelle grille</button>
+    <button class="ga-btn" onclick="reshuffleAll()">🎲 Tout</button>
+    <button class="ga-btn red" onclick="confirmQuit()">🏁 Fin</button>
+  </div>
+</div>
+
+<!-- ══════════ PRINT ══════════ -->
+<div class="screen" id="printscreen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="topbar-title">Imprimer des grilles</span>
+  </div>
+  <div class="print-body">
+    <div class="print-preview-box">
+      <div class="pp-label">Aperçu de la grille :</div>
+      <div class="print-mini-grid" id="printPreview"></div>
+    </div>
+
+    <span class="section-label">Difficulté</span>
+    <div class="diff-row" style="margin-bottom:14px">
+      <button class="diff-btn sel" data-d="easy"   onclick="setPrintDiff('easy')">🟢 Facile</button>
+      <button class="diff-btn"     data-d="medium" onclick="setPrintDiff('medium')">🟡 Moyen</button>
+      <button class="diff-btn"     data-d="hard"   onclick="setPrintDiff('hard')">🔴 Difficile</button>
+    </div>
+
+    <div class="count-control">
+      <span class="cc-label">Nombre de grilles</span>
+      <div class="cc-row">
+        <button class="cc-btn" onclick="changePrint(-1)">−</button>
+        <span class="cc-val" id="printCountVal">2</span>
+        <button class="cc-btn" onclick="changePrint(1)">+</button>
+      </div>
+    </div>
+
+    <button class="print-btn" onclick="doPrint()">🖨️ Imprimer maintenant</button>
+  </div>
+</div>
+
+<!-- ══════════ MY ITEMS ══════════ -->
+<div class="screen" id="myitems">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="topbar-title">✨ Mes éléments</span>
+  </div>
+  <div class="myitems-body">
+
+    <!-- Add form -->
+    <div class="mi-add-card">
+      <div class="mi-add-title">Ajouter un élément</div>
+      <div class="mi-emoji-row">
+        <div class="mi-emoji-preview" id="miEmojiPreview">🎯</div>
+        <div class="mi-emoji-grid" id="miEmojiGrid"></div>
+      </div>
+      <input class="pname-input" id="miLabelInput" placeholder="Ex: Statue bizarre, Lamas, ..." maxlength="24" style="margin-top:10px">
+      <div class="mi-add-hint">Max 24 caractères · Emoji + nom = ta case bingo perso !</div>
+      <button class="mi-add-btn" onclick="addMyItem()">➕ Ajouter à ma liste</button>
+    </div>
+
+    <!-- User items list -->
+    <div class="mi-section-label">Ma liste (<span id="miCount">0</span> éléments)</div>
+    <div id="miList">
+      <div class="mi-empty">Aucun élément pour l'instant.<br>Ajoute des trucs insolites que tu veux trouver ! 👆</div>
+    </div>
+
+    <div class="mi-section-label" style="margin-top:20px">ℹ️ Comment ça marche ?</div>
+    <div class="mi-info-box">
+      Tes éléments s'ajoutent automatiquement au pool de jeu en mode <strong>Aléatoire</strong>, et apparaissent dans la liste <strong>Personnalisée</strong> pour les sélectionner. Ils sont sauvegardés sur ton téléphone.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HISTORY ══════════ -->
+<div class="screen" id="history">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="topbar-title">Historique</span>
+    <button onclick="clearHistory()" style="margin-left:auto;background:none;border:none;color:var(--coral);font-weight:800;font-size:.78rem;cursor:pointer">Effacer tout</button>
+  </div>
+  <div class="hist-body" id="histList"></div>
+</div>
+
+<!-- ══════════ OVERLAYS ══════════ -->
+<div class="overlay" id="winOverlay">
+  <div class="ov-card">
+    <span class="ov-bigmoji">🏆</span>
+    <div class="ov-title" id="winTitle">BINGO !</div>
+    <div class="ov-sub" id="winSub"></div>
+    <button class="ov-btn ov-primary" onclick="closeWin()">Continuer à jouer !</button>
+    <button class="ov-btn ov-ghost" onclick="endGame()">Terminer la partie</button>
+  </div>
+</div>
+
+<div class="overlay" id="quitOverlay">
+  <div class="ov-card">
+    <span style="font-size:3.5rem;display:block;margin-bottom:12px">🏁</span>
+    <div class="ov-title">On s'arrête ?</div>
+    <div class="ov-sub">La partie sera sauvegardée dans l'historique.</div>
+    <button class="ov-btn ov-primary" onclick="endGame()">Oui, terminer !</button>
+    <button class="ov-btn ov-ghost" onclick="closeQuit()">Non, on continue</button>
+  </div>
+</div>
+
+<div class="overlay" id="qrOverlay">
+  <div class="ov-card">
+    <div class="qr-modal-inner">
+      <div class="ov-title" style="font-size:1.4rem;margin-bottom:4px">📲 Partager la grille</div>
+      <canvas id="qrCanvas" width="200" height="200"></canvas>
+      <div class="qr-modal-sub">Scanne pour ouvrir KiVoitQuoi sur l'autre téléphone — même seed, même partie !</div>
+      <div id="qrSeedText" style="margin-top:10px;font-size:.72rem;color:var(--muted);font-weight:700"></div>
+    </div>
+    <button class="ov-btn ov-ghost" style="margin-top:16px" onclick="closeQr()">Fermer</button>
+  </div>
+</div>
+
+<div id="print-out"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
