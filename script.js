@@ -118,7 +118,16 @@ function goHome() { renderHomeHist(); showScreen('home'); }
 function goSetup(mode) {
   sMode = mode;
   document.getElementById('setupTitle').textContent = mode === 'team' ? '🤝 Mode Équipe' : '⚔️ Mode Défi';
-  renderPNames();
+  
+  // Masquer les sections joueurs en mode équipe
+  const playerSection = document.getElementById('playerSection');
+  if (playerSection) {
+    playerSection.style.display = mode === 'team' ? 'none' : 'block';
+  }
+  
+  if (mode === 'defi') {
+    renderPNames();
+  }
   renderItemsGrid();
   showScreen('setup');
 }
@@ -200,23 +209,34 @@ function startGame() {
     return;
   }
 
-  const names  = getNames();
   const seed   = Math.floor(Math.random()*1e9);
   const custom = sGridMode==='custom' ? new Set(sCustom) : null;
 
-  const players = names.map((name,i) => ({
-    name,
-    color: PCOLS[i],
-    grid:    pickGrid(sDiff, custom, seed + i*999),
-    checked: new Set(),
-    bingoShown: false,
-    bingoCount: 0,
-  }));
-
+  let players;
+  
   if (sMode === 'team') {
+    // Mode équipe : un seul joueur virtuel "Équipe"
     const sharedGrid    = pickGrid(sDiff, custom, seed);
     const sharedChecked = new Set();
-    players.forEach(p => { p.grid = sharedGrid; p.checked = sharedChecked; });
+    players = [{
+      name: 'Équipe',
+      color: PCOLS[0],
+      grid: sharedGrid,
+      checked: sharedChecked,
+      bingoShown: false,
+      bingoCount: 0,
+    }];
+  } else {
+    // Mode défi : chaque joueur a sa grille
+    const names = getNames();
+    players = names.map((name,i) => ({
+      name,
+      color: PCOLS[i],
+      grid:    pickGrid(sDiff, custom, seed + i*999),
+      checked: new Set(),
+      bingoShown: false,
+      bingoCount: 0,
+    }));
   }
 
   game = { id: Date.now(), mode: sMode, diff: sDiff, seed, players, active: 0, start: new Date().toISOString() };

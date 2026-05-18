@@ -89,16 +89,18 @@
 
   <div class="setup-body">
 
-    <span class="section-label">Nombre de joueurs</span>
-    <div class="pcount-row">
-      <button class="pcount-btn sel" data-n="1" onclick="setPlayers(1)">1</button>
-      <button class="pcount-btn" data-n="2" onclick="setPlayers(2)">2</button>
-      <button class="pcount-btn" data-n="3" onclick="setPlayers(3)">3</button>
-      <button class="pcount-btn" data-n="4" onclick="setPlayers(4)">4</button>
-    </div>
+    <div id="playerSection">
+      <span class="section-label">Nombre de joueurs</span>
+      <div class="pcount-row">
+        <button class="pcount-btn sel" data-n="1" onclick="setPlayers(1)">1</button>
+        <button class="pcount-btn" data-n="2" onclick="setPlayers(2)">2</button>
+        <button class="pcount-btn" data-n="3" onclick="setPlayers(3)">3</button>
+        <button class="pcount-btn" data-n="4" onclick="setPlayers(4)">4</button>
+      </div>
 
-    <span class="section-label">Prénoms</span>
-    <div class="pnames" id="pnameWrap"></div>
+      <span class="section-label">Prénoms</span>
+      <div class="pnames" id="pnameWrap"></div>
+    </div>
 
     <span class="section-label">Difficulté</span>
     <div class="diff-row">
